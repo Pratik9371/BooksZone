@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksZone", "BooksZone\BooksZone.csproj", "{10B2108F-8F62-4A8D-ABC9-0B6B633FEC7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksZone", "BooksZone\BooksZone.csproj", "{10B2108F-8F62-4A8D-ABC9-0B6B633FEC7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksZone.DataAccess", "BooksZone.DataAccess\BooksZone.DataAccess.csproj", "{A763F504-290A-417C-9BF3-11AF1FEB932D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksZone.DataAccess", "BooksZone.DataAccess\BooksZone.DataAccess.csproj", "{A763F504-290A-417C-9BF3-11AF1FEB932D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksZone.Models", "BooksZone.Models\BooksZone.Models.csproj", "{37562552-20D3-4705-96F5-94E00A7B2D33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksZone.Models", "BooksZone.Models\BooksZone.Models.csproj", "{37562552-20D3-4705-96F5-94E00A7B2D33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksZone.Utility", "BooksZone.Utility\BooksZone.Utility.csproj", "{9D9B352E-3F26-43F5-93F0-EB4FED73098A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksZone.Utility", "BooksZone.Utility\BooksZone.Utility.csproj", "{9D9B352E-3F26-43F5-93F0-EB4FED73098A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,47 @@
+﻿@model BooksZone.Models.Category;
+@{
+    ViewData["Title"] = "Upsert";
+    var title = "Create Category";
+}
+
+<form method="post">
+    <div class="row border p-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if(Model.Id != 0)
+        {
+            //Edit
+            title = "Edit Category";
+        }
+        <div class="col-12">
+            <h2 class="text-primary">@title</h2>
+            <hr />
+        </div>
+        <div class="col-8 p-3">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Name"></label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" asp-for="Name"/>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Id != 0)
+                    {
+                        <partial name="_EditAndBackToListButtonPartial" model="Model.Id" />
+                    }
+                    else
+                    {
+                        <partial name="_CreateAndBackToListButtonPartial" />
+                    }
+                </div>      
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{ 
+<partial name="_ValidationScriptsPartial" />
+}   
