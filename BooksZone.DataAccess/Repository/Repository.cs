@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace BooksZone.DataAccess.Repository
@@ -30,10 +31,21 @@ namespace BooksZone.DataAccess.Repository
            return dbSet.Find(id);
         }
 
-        public IEnumerable<T> GetAll()
-        {
-           return dbSet.ToList();
-        }
+        //public IEnumerable<T> GetAll(string includeProperties = null)
+        //{
+        //    IQueryable<T> query = dbSet;
+
+        //    if (includeProperties != null)
+        //    {
+        //        foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+        //        {
+        //            query = query.Include(includeProp);
+        //        }
+        //    }
+
+
+        //    return dbSet.ToList();
+        //}
 
         public void Remove(int id)
         {
@@ -45,5 +57,26 @@ namespace BooksZone.DataAccess.Repository
         {
             dbSet.Remove(entity);
         }
+
+
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null,string includeProperties = null)
+        {
+            IQueryable<T> query = dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return query.ToList();
+        }
+
     }
 }
