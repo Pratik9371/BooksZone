@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using BooksZone.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -28,16 +32,56 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <!-- Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                Content Managemnt
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
-                            </div>
-                        </li>
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                    Content Managemnt
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
+                                </div>
+                            </li>
+                        }
+                        @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Emp))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                    User/Company
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">User</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Orders</a>
+                            </li>
+                        }
+                        @if (HttpContextAccessor.HttpContext.Session.GetInt32("CartCount") != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
+                                    @{
+                                        var count = HttpContextAccessor.HttpContext.Session.GetInt32("CartCount");
+                                    }
+                                    <i class="fa fa-shopping-cart"></i> <sup><span class="badge badge-pill badge-danger">@count</span></sup>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    @{
+                                        var count = HttpContextAccessor.HttpContext.Session.GetInt32("CartCount");
+                                    }
+                                    <i class="fa fa-shopping-cart"></i> <sup><span class="badge badge-pill badge-danger">0</span></sup>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

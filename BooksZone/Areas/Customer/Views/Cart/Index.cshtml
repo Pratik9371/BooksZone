@@ -1,0 +1,63 @@
+﻿@model BooksZone.Models.ViewModels.ShoppingCartVM
+
+@if (Model.ListCart.Count() > 0)
+{
+<form method="post">
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-dark ml-0 row container">
+                <div class="col-6">
+                    <h5 class="text-white"><i class="fa fa-shopping-cart"></i>&nbsp; Shopping cart</h5>
+                </div>
+                <div class="col-6 text-right">
+                    <a class="btn btn-outline-light" asp-area="Customer" asp-controller="Home" asp-action="Index">Continue Shopping</a>
+                </div>
+            </div>
+            <div class="card-body">
+                @foreach (var cart in Model.ListCart)
+                {
+                    <div class="row">
+                        <div class="col-2">
+                            <img src="@cart.Product.ImageUrl" width="100" height="150" />
+                        </div>
+                        <div class="col-5">
+                            <h5>@cart.Product.Title</h5>
+                            <p>@cart.Product.Description</p>
+                        </div>
+                        <div class="col-2 text-center">
+                            @{
+                                var Total = cart.Product.Price * cart.Count;
+                            }
+                            <p><strong>@cart.Product.Price x @cart.Count = @Total</strong></p>
+                        </div>
+                        <div class="col-2 text-center">
+                            <a asp-action="Minus" asp-route-cartId="@cart.Id" class="btn btn-danger text-white" style="cursor:pointer"><i class="fa fa-minus"></i></a>
+                            <a asp-action="Plus" asp-route-cartId="@cart.Id" class="btn btn-primary text-white" style="cursor:pointer"><i class="fa fa-plus"></i></a>
+                        </div>
+                        <div class="col-1 text-right">
+                            <a asp-action="Remove" asp-route-cartId="@cart.Id" class="btn btn-danger text-white" style="cursor:pointer"><i class="fa fa-trash"></i></a>
+                        </div>
+                    </div><hr />
+                }
+                 <div class="row justify-content-end pr-3">
+                        <div class="col-md-3 p-3 bg-light text-primary d-flex justify-content-between border">
+                            <span class="text-right">Total (₹)  </span>
+                            <strong> @Model.OrderHeader.OrderTotal.ToString("c")</strong>
+                        </div>
+                 </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 text-right">
+                        <a asp-area="Customer" asp-controller="Cart" asp-action="Summary" class="btn btn-success">Summary</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+}
+else
+{
+    <div>There are no items in the shopping cart.</div>
+}

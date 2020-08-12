@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using BooksZone.DataAccess.Repository;
 using BooksZone.DataAccess.Repository.IRepository;
 using BooksZone.Models;
+using BooksZone.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BooksZone.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CoverTypeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

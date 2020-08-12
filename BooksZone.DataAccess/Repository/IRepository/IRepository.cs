@@ -16,9 +16,15 @@ namespace BooksZone.DataAccess.Repository.IRespository
             string includeProperties = null
             );
 
+        T GetFirstOrDefault(
+            Expression<Func<T,bool>> filter = null,
+            string includeProperties = null
+            );
+
         T Get(int id);
        void Add(T entity);
        void Remove(int id);
        void Remove(T entity);
+       void RemoveRange(IEnumerable<T> entity);
     }
 }

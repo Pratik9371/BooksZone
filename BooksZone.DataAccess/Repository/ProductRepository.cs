@@ -31,9 +31,6 @@ namespace BooksZone.DataAccess.Repository
                 result.Description = product.Description;
                 result.Author = product.Author;
                 result.Price = product.Price;
-                result.ListPrice = product.ListPrice;
-                result.Price50 = product.Price50;
-                result.Price100 = product.Price100;
                 result.ISBN = product.ISBN;
                 result.CategoryId = product.CategoryId;
                 result.CoverTypeId = product.CoverTypeId;

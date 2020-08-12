@@ -14,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using BooksZone.DataAccess.Data;
 using BooksZone.DataAccess.Repository;
 using BooksZone.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using BooksZone.Utility;
 
 namespace BooksZone
 {
@@ -32,11 +34,28 @@ namespace BooksZone
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders() 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddSingleton<IEmailSender, EmailSender>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+            services.AddAuthentication().AddFacebook(options => {
+                options.AppId = "283954242895318";
+                options.AppSecret = "bb6e990796665afbe1bc36bb542039cb";
+            });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +79,8 @@ namespace BooksZone
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
