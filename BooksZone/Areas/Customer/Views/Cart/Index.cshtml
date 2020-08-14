@@ -1,4 +1,5 @@
 ﻿@model BooksZone.Models.ViewModels.ShoppingCartVM
+@using BooksZone.Utility
 
 @if (Model.ListCart.Count() > 0)
 {
@@ -48,9 +49,24 @@
             </div>
             <div class="card-footer">
                 <div class="row">
-                    <div class="col-12 text-right">
-                        <a asp-area="Customer" asp-controller="Cart" asp-action="Summary" class="btn btn-success">Summary</a>
-                    </div>
+
+                    @if (!Model.OrderHeader.ApplicationUser.EmailConfirmed)
+                    {
+                        <div class="col-8 text-danger">
+                            Email must be confirmed in for authorized users!
+                        </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-outline-warning">
+                                Click here to resend email confirmation
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-4 offset-8">
+                            <a asp-area="Customer" asp-controller="Cart" asp-action="Summary" class="btn btn-success form-control">Summary</a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using BooksZone.DataAccess.Repository.IRepository;
 using BooksZone.Models;
 using BooksZone.Models.ViewModels;
 using BooksZone.Utility;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace BooksZone.Areas.Customer.Controllers
 {
@@ -16,13 +21,19 @@ namespace BooksZone.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender;
+
+        private readonly UserManager<IdentityUser> _userManager;
+        private object returnUrl;
 
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
 
-        public CartController(IUnitOfWork unitOfWork)
+        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -35,6 +46,9 @@ namespace BooksZone.Areas.Customer.Controllers
                 OrderHeader = new Models.OrderHeader(),
                 ListCart = _unitOfWork.ShoppingCart.GetAll(u=>u.ApplicationUserId == claim.Value,includeProperties: "Product")
             };
+
+            //Retrieving the Application user and storing it in VM OrderHeader.ApplicationUser
+            ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
            
             foreach(var list in ShoppingCartVM.ListCart)
             {
@@ -164,6 +178,40 @@ namespace BooksZone.Areas.Customer.Controllers
         public IActionResult OrderConfrimation(int id)
         {
             return View(id);
+        }
+
+
+        [HttpPost]
+        [ActionName("Index")]
+        public async Task<IActionResult> IndexPost()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "verification email is empty");
+            }
+
+
+            //For Resending the email confirmation
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code = code},
+                protocol: Request.Scheme);
+
+            await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            //Show Sent message
+            ModelState.AddModelError(string.Empty, "Verfication email sent. Please check your email");
+            return RedirectToAction("Index");
         }
     }
 }

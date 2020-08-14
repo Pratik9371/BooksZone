@@ -48,7 +48,7 @@ namespace BooksZone.Areas.Admin.Controllers
                 user.Role = roles.FirstOrDefault(i => i.Id == roleId).Name;
                 if (user.Company == null)
                 {
-                    user.Company = new Company
+                    user.Company = new Company()
                     {
                         Name = ""
                     };
